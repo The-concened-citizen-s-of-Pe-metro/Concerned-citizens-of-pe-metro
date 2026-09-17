@@ -96,6 +96,22 @@ async function startServer() {
     res.json(communityStore.getStats());
   });
 
+  // Facebook Integration Proxy
+  app.post('/api/facebook/fetch-page', async (req, res) => {
+    const { pageId, accessToken } = req.body;
+    if (accessToken && pageId) {
+      try {
+        const fbUrl = `https://graph.facebook.com/v19.0/${pageId}/posts?fields=id,message,created_time,full_picture,permalink_url,reactions.summary(total_count),comments.summary(total_count)&access_token=${accessToken}`;
+        const response = await fetch(fbUrl);
+        const data = await response.json();
+        return res.json(data);
+      } catch (err: any) {
+        return res.status(500).json({ error: 'Failed to contact Facebook API: ' + err.message });
+      }
+    }
+    res.json({ status: 'ok', message: 'Ready for Facebook sync' });
+  });
+
   // Settings & Banking Details
   app.get('/api/settings', (req, res) => {
     res.json(communityStore.getSettings());
