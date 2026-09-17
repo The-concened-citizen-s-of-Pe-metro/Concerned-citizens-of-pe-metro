@@ -21,6 +21,7 @@ import {
 } from 'lucide-react';
 import { useApp } from '../context/AppContext';
 import { useAuth } from '../context/AuthContext';
+import { FacebookImporterModal } from './FacebookImporterModal';
 
 interface HeaderProps {
   activeTab: string;
@@ -38,6 +39,7 @@ export const Header: React.FC<HeaderProps> = ({
   onOpenLoginModal,
 }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [fbImporterOpen, setFbImporterOpen] = useState(false);
   const { settings, issues, setIsEditorOpen } = useApp();
   const { currentUser, isAdmin, logout } = useAuth();
 
@@ -141,11 +143,11 @@ export const Header: React.FC<HeaderProps> = ({
           onClick={() => handleNavClick('home')}
           className="flex items-center gap-3 cursor-pointer group select-none"
         >
-          <div className="relative w-12 h-12 rounded-full overflow-hidden bg-white border-2 border-red-600 shadow-md shadow-red-950/40 shrink-0 flex items-center justify-center group-hover:scale-105 transition-transform">
+          <div className="relative w-12 h-12 rounded-full overflow-hidden bg-white border-2 border-red-600 shadow-md shadow-red-950/40 shrink-0 flex items-center justify-center group-hover:scale-105 transition-transform p-0.5">
             <img
               src={settings.logo_url || '/logo.jpg'}
               alt="Concerned Citizens of PE Metro Official Logo"
-              className="w-full h-full object-cover"
+              className="w-full h-full object-contain rounded-full"
               referrerPolicy="no-referrer"
               onError={(e) => {
                 (e.target as HTMLImageElement).src = '/logo.jpg';
@@ -216,6 +218,19 @@ export const Header: React.FC<HeaderProps> = ({
               <span>Admin Console</span>
             </button>
           )}
+
+          {/* Facebook Sync Button */}
+          <button
+            type="button"
+            onClick={() => setFbImporterOpen(true)}
+            className="flex items-center gap-1.5 px-3 py-2 text-xs font-bold rounded-lg bg-blue-950/80 hover:bg-blue-900 text-blue-200 border border-blue-600/60 shadow-sm transition"
+            title="Import from Facebook Page"
+          >
+            <svg className="w-3.5 h-3.5 fill-current text-blue-400" viewBox="0 0 24 24">
+              <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
+            </svg>
+            <span>FB Sync</span>
+          </button>
         </div>
 
         {/* Mobile menu trigger */}
@@ -349,9 +364,35 @@ export const Header: React.FC<HeaderProps> = ({
                 <span>Admin Console</span>
               </button>
             )}
+
+            {/* Facebook Sync Mobile Item */}
+            <button
+              type="button"
+              onClick={() => {
+                setMobileMenuOpen(false);
+                setFbImporterOpen(true);
+              }}
+              className="w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-sm bg-blue-950/50 text-blue-300 font-bold border border-blue-800/50 hover:bg-blue-900/50 transition"
+            >
+              <div className="flex items-center gap-3">
+                <svg className="w-4 h-4 fill-current text-blue-400" viewBox="0 0 24 24">
+                  <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
+                </svg>
+                <span>Facebook Importer & Sync</span>
+              </div>
+              <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-blue-700 text-white">
+                Sync
+              </span>
+            </button>
           </div>
         </div>
       )}
+
+      {/* Global Facebook Importer Modal */}
+      <FacebookImporterModal
+        isOpen={fbImporterOpen}
+        onClose={() => setFbImporterOpen(false)}
+      />
     </header>
   );
 };
