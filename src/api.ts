@@ -89,4 +89,12 @@ export const api = {
   async getSettings(): Promise<OrgSettings> {
     return request('/api/settings');
   },
+
+  // Facebook Integration
+  async fetchFacebookPage(pageId: string, accessToken?: string): Promise<any> {
+    return request('/api/facebook/fetch-page', {
+      method: 'POST',
+      body: JSON.stringify({ pageId, accessToken }),
+    });
+  },
 };
