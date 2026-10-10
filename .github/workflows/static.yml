@@ -1,5 +1,4 @@
 name: Deploy Concerned Citizens of PE Metro to GitHub Pages
-
 on:
 push:
 branches:
