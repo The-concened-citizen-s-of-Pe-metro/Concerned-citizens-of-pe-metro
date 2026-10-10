@@ -1,50 +1,55 @@
-name: Deploy static content to Pages
+name: Deploy Concerned Citizens of PE Metro to Pages
 
 on:
-  push:
-    branches: ["main"]
-  workflow_dispatch:
+push:
+branches: ["main"]
+workflow_dispatch:
 
 permissions:
-  contents: read
-  pages: write
-  id-token: write
+contents: read
+pages: write
+id-token: write
 
 concurrency:
-  group: "pages"
-  cancel-in-progress: false
+group: "pages"
+cancel-in-progress: false
 
 jobs:
-  deploy:
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+deploy:
+environment:
+name: github-pages
+url: ${{ steps.deployment.outputs.page_url }}
 
-    runs-on: ubuntu-latest
+```
+runs-on: ubuntu-latest
 
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+steps:
+  - name: Checkout
+    uses: actions/checkout@v4
 
-      - name: Setup Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: 24
+  - name: Setup Node
+    uses: actions/setup-node@v4
+    with:
+      node-version: 24
 
-      - name: Install dependencies
-        run: npm install
+  - name: Install dependencies
+    run: npm install
 
-      - name: Build Vite app
-        run: npm run build
+  - name: Build Vite app
+    run: npm run build
+    env:
+      VITE_SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+      VITE_SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+      VITE_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
 
-      - name: Setup Pages
-        uses: actions/configure-pages@v5
+  - name: Setup Pages
+    uses: actions/configure-pages@v5
 
-      - name: Upload Vite build
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: './dist'
+  - name: Upload Vite build
+    uses: actions/upload-pages-artifact@v3
+    with:
+      path: './dist'
 
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v5
+  - name: Deploy to GitHub Pages
+    id: deployment
+    uses: actions/deploy-pages@v5
